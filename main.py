@@ -21,10 +21,11 @@ if LINE.strip() == "":
 if "\n" in LINE or "\r" in LINE:
     raise SystemExit("line must be exactly one line")
 # A clean one-liner: no control characters and no stray leading or
-# trailing whitespace.
+# trailing whitespace. C0 controls and DEL are rejected, and so are
+# the C1 controls (U+0080-U+009F), which can hide inside pasted text.
 for ch in LINE:
     cp = ord(ch)
-    if cp < 0x20 or cp == 0x7F:
+    if cp < 0x20 or cp == 0x7F or 0x80 <= cp <= 0x9F:
         raise SystemExit(f"line must not contain control characters (U+{cp:04x})")
 if LINE != LINE.strip():
     raise SystemExit("line must not start or end with whitespace")
